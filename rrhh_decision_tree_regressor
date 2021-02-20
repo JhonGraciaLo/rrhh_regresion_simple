@@ -1,0 +1,65 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+evaluacion_data="evaluacion.xlsx"
+evaluacion=pd.read_excel(evaluacion_data)
+print(evaluacion.head())
+
+print('Verificar la cantidad de datos que hay en el dataset: ')
+print(evaluacion.info())
+
+print('Descripción del dataset: ')
+print(evaluacion.describe())
+
+#Tranformar los datos a una matriz
+
+print('Valores del data en matriz: ')
+dataset=evaluacion.values
+print(dataset)
+
+#definir las variables con las cuales se va a trabajar
+X_tree=dataset[:,np.newaxis, 2]
+y_tree=dataset[:,np.newaxis, 5]
+
+#Graficar los datos correspondientes
+plt.scatter(X_tree, y_tree, alpha=0.3)
+plt.title('GRÁFICA DE DISPERSIÓN \n AÑOS DE ESCOLARIDAD Y EVALAUCIÓN DE DESEMPEÑO')
+plt.xlabel('Años de escolaridad')
+plt.ylabel('Evaluación de desempeño')
+plt.show()
+
+#MODELO
+
+from sklearn.model_selection import train_test_split
+
+#Separa los datos de aprendizaje y prueba
+X_train, X_test, y_train, y_test = train_test_split(X_tree, y_tree, test_size=0.2)
+
+#Importar el modelo desde sklearn
+
+from sklearn.tree import DecisionTreeRegressor
+
+#Implementar el modelo
+
+tree=DecisionTreeRegressor(max_depth=5)
+
+#Entrenamos el algoritmo
+tree.fit(X_train, y_train)
+
+#Hacemos una predicción
+Y_pred_tree=tree.predict(X_test)
+
+#GRAFICO DE LOS DATOS DE PRUEBA JUNTO CON LOS DATOS DE PREDICCIÓN
+X_grid=np.arange(min(X_test),max(X_test),0.1)
+X_grid=X_grid.reshape((len(X_grid),1))
+plt.scatter(X_test, y_test)
+plt.plot(X_grid,tree.predict(X_grid), color="red", linewidth=2)
+plt.xlabel('Años de escolaridad observados y calculados')
+plt.ylabel('Evaluación observada y calculada')
+plt.title('DECISION TREE REGRESSION \nGRAFICA DE DATOS DE PRUEBA Y CURVA DE PREDICCIÓN')
+plt.show()
+
+#PRECISIÓN DEL MODELO
+print('Precisión del modelo: ')
+print(tree.score(X_train, y_train))
