@@ -1,0 +1,74 @@
+#TRABAJO DE RR/HH
+#Importar las librerías
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from sklearn import datasets, linear_model
+#importar la base de datos
+evaluacion_data="evaluacion.xlsx"
+evaluacion=pd.read_excel(evaluacion_data)
+print(evaluacion.head())
+#Analizar los datos que tenemosdisponibles
+print('Información del dataset: ')
+print(evaluacion.info())
+#Describir los datos
+print('Descripción de los datos del achivo: ')
+print(evaluacion.describe())
+#Entender la data
+print('Informaicón del dataset: ')
+print(evaluacion.keys)
+print()
+#Verificar la cantidad de datos
+print('Cantidad de datos del archivo: ')
+print(evaluacion.shape)
+print()
+#Tranformar los valores del archivo base
+dataset=evaluacion.values
+print(dataset)
+X_multiple=dataset[:,1:4]
+y_multiple=dataset[:,5]
+#GRAFICOS POR CADA VARIABLE
+bar_1=dataset[:,1]
+bar_2=dataset[:,2]
+bar_3=dataset[:,3]
+
+plt.scatter(bar_2,y_multiple)
+plt.title('Anos de escolaridad frente a evalaución de resutlados')
+plt.xlabel('Años de escolaridad en el momento de la evalaución de desempeño')
+plt.ylabel('Resultado de la evaluación de desempeño')
+plt.show()
+
+plt.scatter(bar_3,y_multiple)
+plt.title('Experiencia laboral frente a evalaución de resutlados')
+plt.xlabel('Experiencia laboral en el momento de la evalaución de desempeño')
+plt.ylabel('Resultado de la evaluación de desempeño')
+plt.show()
+
+plt.scatter(bar_1,y_multiple)
+plt.title('Edad frente a evalaución de resutlados')
+plt.xlabel('Edad en el momento de la evalaución de desempeño')
+plt.ylabel('Resultado de la evaluación de desempeño')
+plt.show()
+
+print('Gráfico de la edad frente \na la evalaución de desempeño.')
+print('Valores de las variables Independientes: ')
+print(X_multiple)
+print('Valores de la varaible dependiente: ')
+print(y_multiple)
+#Separa los datos de entrenamiento y los datos de pruba
+from sklearn.model_selection import train_test_split
+
+#Separo los datos de "train" en entrenamiento y prueba para probar los algoritmos
+X_train, X_test, y_train, y_test = train_test_split(X_multiple, y_multiple, test_size=0.2)
+#Definición del algoritmo que se utilizará (Lineal)
+lr_multiple=linear_model.LinearRegression()
+#Entrenar el modelo
+lr_multiple.fit(X_train, y_train)
+#Predicción del modelo
+Y_pred=lr_multiple.predict(X_test)
+#DATOS DE REGRESIÓN MÚLTIPLE
+print('Datos de regresión: ')
+print('Valores de los coeficientes "a": '), print(lr_multiple.coef_)
+print('Valor del intercepto "b": '), print(lr_multiple.intercept_)
+print('Presión del modelo de regresión lineal múltiple: '), print(lr_multiple.score(X_train, y_train))
