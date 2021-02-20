@@ -1,0 +1,53 @@
+#TRABAJO DE RR/HH
+#Importar las librerías
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from sklearn import datasets, linear_model
+#importar la base de datos
+evaluacion_data="evaluacion.xlsx"
+evaluacion=pd.read_excel(evaluacion_data)
+print(evaluacion.head())
+print('Verificar la cantidad de datos que hay en el dataset: ')
+print(evaluacion.info())
+print('Descripción del dataset: ')
+print(evaluacion.describe())
+#Seleccionamos la columna par ala variable X
+print('Variable X: ')
+#Transformar los varlores del dataset
+print('Valores del data en matriz: ')
+dataset=evaluacion.values
+print(dataset)
+X_simple=dataset[:,np.newaxis, 2]
+y_simple=dataset[:,np.newaxis, 5]
+#Graficar los datos
+plt.scatter(X_simple, y_simple)
+plt.title('GRAFICO DE DISPERSIÓN ENTRE AÑOS DE ESCOLARIDAD Y CALIFICACIÓN')
+plt.xlabel('Años de escolaridad al momento de la evaluación')
+plt.ylabel('Resultados de la evaluación 1 - 4')
+plt.show()
+#IMPLEMENTAR LE MODELO DE REGRESIÓN LINEAL SIMPLE
+from sklearn.model_selection import train_test_split
+#Separar los datos de entrenamiento con los de prueba.
+X_train, X_test, y_train, y_test = train_test_split(X_simple, y_simple, test_size=0.2)
+lr_simple=linear_model.LinearRegression()
+#Entrenar el modelo
+lr_simple.fit(X_train,y_train)
+#Hacer un predicción
+Y_pred=lr_simple.predict(X_test)
+#Graficamos los datos junto con el modelo de regresión lineal
+plt.scatter(X_test, y_test)
+plt.plot(X_test, Y_pred, color='blue', linewidth=2)
+plt.title('Regresión Lineal Simple de los datos')
+plt.xlabel('Años de escolaridad a la hora de la evaluación')
+plt.ylabel('Valor medio de la calificación')
+plt.show()
+#DATOS DEL MODELO DE REGRESIÓN SIMPLE
+print('DATOS DEL MODELO DE REGRESIÓN SIMPLE: ')
+print('Valor del coeficiente o pendiente "a": ')
+print(lr_simple.coef_)
+print('Valor del intercepto "b": ')
+print(lr_simple.intercept_)
+print('Grado de ajuste del modelo de \nregresión lineal a los datos observados: ')
+print(lr_simple.score(X_train,y_train))
