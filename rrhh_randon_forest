@@ -1,0 +1,57 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+evaluacion_data="evaluacion.xlsx"
+evaluacion=pd.read_excel(evaluacion_data)
+print(evaluacion.head())
+
+print('Información del dataset: ')
+print(evaluacion.info())
+
+print('Descripción de los datos: ')
+print(evaluacion.describe())
+
+#Transformar los datos
+dataset_randon=evaluacion.values
+print(dataset_randon)
+
+#Definir las varaibles
+X_random_exp=dataset_randon[:, np.newaxis, 3]
+y_random_exp=dataset_randon[:, np.newaxis, 5]
+
+#graficas de dispersión
+plt.scatter(X_random_exp, y_random_exp)
+plt.xlabel('Años de experiencia en el momento de la evalaución')
+plt.ylabel('Evalaución sobre el rango de 1 - 5')
+plt.title('GRÁFICA DE DISPERSIÓN ENTRE AÑOS DE EXPERIENCIA \nY EVALUACIÓN DE DESEMPEÑO')
+plt.show()
+
+# MODELO RANDOM FORES REGRESOR
+from sklearn.model_selection import train_test_split
+
+#Separar los datos del modelo de entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X_random_exp, y_random_exp, test_size=0.2)
+
+from sklearn.ensemble import RandomForestRegressor
+
+#IMportar y configurar el modelo de Random Forest
+
+forest=RandomForestRegressor(n_estimators=300, max_depth=8)
+
+#Entrenar el modelo
+forest.fit(X_train, y_train)
+
+#Predicción
+Y_pred=forest.predict(X_test)
+
+#Graficar los datos de prueba junto con la predicción
+X_grid=np.arange(min(X_test), max(X_test), 0.1)
+X_grid=X_grid.reshape((len(X_grid), 1))
+plt.scatter(X_test, y_test)
+plt.plot(X_grid,forest.predict(X_grid), color="red", linewidth=3)
+plt.show()
+
+#DATOS DE REGRESIÓN DEL MODELO
+print('Precisión del modelo de regresión: ')
+print(forest.score(X_train, y_train))
