@@ -1,0 +1,84 @@
+#Importar las librerías
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from sklearn import datasets, linear_model
+
+#importar la base de datos
+evaluacion_data="evaluacion.xlsx"
+evaluacion=pd.read_excel(evaluacion_data)
+print(evaluacion.head())
+
+#Analizar los datos que tenemosdisponibles
+print('Información del dataset: ')
+print(evaluacion.info())
+
+#Describir los datos
+print('Descripción de los datos del achivo: ')
+print(evaluacion.describe())
+
+#Entender la data
+print('Informaicón del dataset: ')
+print(evaluacion.keys)
+print()
+
+#Verificar la cantidad de datos
+print('Cantidad de datos del archivo: ')
+print(evaluacion.shape)
+print()
+
+#Tranformar los valores del archivo base
+dataset=evaluacion.values
+print(dataset)
+
+print('Variables por trabajar: ')
+X_poly=dataset[:,np.newaxis, 3]
+y_poly=dataset[:,np.newaxis, 5]
+
+#GRAFICA
+plt.scatter(X_poly, y_poly)
+plt.xlabel('Años de experiencia al momento de la evaluación')
+plt.ylabel('Evaluación de desempeño en el rango de 1 - 5')
+plt.title('GRÁFICA DE DISPERSIÓN ENTRE AÑOS DE EXPERIENCIA \n Y EVALUACIÓN DE DESEMPEÑO')
+plt.show()
+
+from sklearn.model_selection import train_test_split
+
+#SEPARAR LOS DATOS DE ENTRENAMIENTO Y PRUEBA
+X_train_p, X_test_p, y_train_p, y_test_p = train_test_split(X_poly, y_poly, test_size=0.2)
+
+from sklearn.preprocessing import PolynomialFeatures
+
+#DEFINIR EL GRADO DEL POLINOMIO
+poli_reg=PolynomialFeatures(degree=2)
+
+#TRANSFORMAR LAS CARACTERÍSTICAS EXISTENTES EN UNA DE MAYOR GRADO
+X_train_poli = poli_reg.fit_transform(X_train_p)
+X_test_poli = poli_reg.fit_transform(X_test_p)
+
+#DEFINIR EL ALGORIT POR USAR
+pr = linear_model.LinearRegression()
+
+#Entrenar el modelo
+pr.fit(X_train_poli, y_train_p)
+
+#Realizar una predicción
+Y_pred=pr.predict(X_test_poli)
+
+
+#GRAFICA DE DATOS JUNTO CON EL MODELO
+plt.scatter(X_test_p, y_test_p)
+plt.xlabel('Años de experiencia de prueba y datos estimados')
+plt.ylabel('Datos de evalaución de prueba \ny resultado estimado por el modelo')
+plt.plot(X_test_p, Y_pred, color="red", linewidth=3)
+plt.title('REGRESIÓN POLINOMIAL \nGRAFICO DE LOS DATOS OBSERVADOS Y LOS DATOS ESTIMADOS')
+plt.show()
+
+#MODELO DE REGRESIÓN POLINOMIAL
+print('Valor del coeficiente "a": ')
+print(pr.coef_)
+print('Valor de la intercepción "b": ')
+print(pr.intercept_)
+print('Precisión del modelo de \nregresión polinomial: ')
+print(pr.score(X_train_poli, y_train_p))
