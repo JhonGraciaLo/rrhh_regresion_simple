@@ -72,3 +72,12 @@ print('Datos de regresión: ')
 print('Valores de los coeficientes "a": '), print(lr_multiple.coef_)
 print('Valor del intercepto "b": '), print(lr_multiple.intercept_)
 print('Presión del modelo de regresión lineal múltiple: '), print(lr_multiple.score(X_train, y_train))
+
+#Analisis de probabilidades 
+import statsmodels.api as sm 
+X_multiple = sm.add_constant(X_multiple)
+lr_multiple = sm.OLS(y_multiple, X_multiple)
+results = lr_multiple.fit()
+print(results.summary())
+
+
